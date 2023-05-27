@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+
+  standalone-postgres:
+    container_name: standalone-postgres
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  citus-master:
+    container_name: citus-master
+    image: citusdata/citus:postgres_14
+    ports:
+      - "5433:5432"
+    environment: &AUTH
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      CITUS_HOST: citus-master
+
+  citus-manager:
+    container_name: citus-manager
+    image: citusdata/membership-manager:0.3.0
+    environment: *AUTH
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - healthcheck-volume:/healthcheck
+    depends_on:
+      - citus-master
+
+  citus-worker-1:
+    container_name: citus-worker-1
+    image: citusdata/citus:postgres_14
+    command: /wait-for-manager.sh
+    environment: *AUTH
+    volumes:
+      - healthcheck-volume:/healthcheck
+    depends_on:
+      - citus-manager
+
+  citus-worker-2:
+    container_name: citus-worker-2
+    image: citusdata/citus:postgres_14
+    command: /wait-for-manager.sh
+    environment: *AUTH
+    volumes:
+      - healthcheck-volume:/healthcheck
+    depends_on:
+      - citus-manager
+
+volumes:
+  healthcheck-volume:
