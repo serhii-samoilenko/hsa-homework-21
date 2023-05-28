@@ -17,15 +17,15 @@ CREATE TABLE books (
 );
 ```
 
-Initializing database...
+Running test scenario...
 
-### Running inserts for 10s with concurrency 10
+### Running inserts for 1m with concurrency 10
 
-`36149 ops in 10.002s - 3614.177 ops/sec`
+`222927 ops in 1m 0.001s - 3715.388 ops/sec`
 
-### Running selects for 10s with concurrency 10
+### Running selects for 1m with concurrency 10
 
-`679 ops in 10.113s - 67.141 ops/sec`
+`2750 ops in 1m 0.082s - 45.771 ops/sec`
 
 ## Sharding by category
 
@@ -50,15 +50,15 @@ CREATE RULE books_insert_to_category_2 AS ON INSERT TO books WHERE ( category_id
 CREATE RULE books_insert_to_category_3 AS ON INSERT TO books WHERE ( category_id = 3 ) DO INSTEAD INSERT INTO books_3 VALUES (NEW.*);
 ```
 
-Initializing database...
+Running test scenario...
 
-### Running inserts for 10s with concurrency 10
+### Running inserts for 1m with concurrency 10
 
-`38445 ops in 10.001s - 3844.116 ops/sec`
+`217669 ops in 1m 0.003s - 3627.635 ops/sec`
 
-### Running selects for 10s with concurrency 10
+### Running selects for 1m with concurrency 10
 
-`602 ops in 10.119s - 59.492 ops/sec`
+`6959 ops in 1m 0.05s - 115.887 ops/sec`
 
 ## Sharding using citus
 
@@ -83,13 +83,13 @@ CREATE TABLE books (
 SELECT create_distributed_table('books', 'category_id');
 ```
 
-Initializing database...
+Running test scenario...
 
-### Running inserts for 10s with concurrency 10
+### Running inserts for 1m with concurrency 10
 
-`38873 ops in 10.001s - 3886.911 ops/sec`
+`195131 ops in 1m 0.001s - 3252.129 ops/sec`
 
-### Running selects for 10s with concurrency 10
+### Running selects for 1m with concurrency 10
 
-`356 ops in 10.16s - 35.039 ops/sec`
+`6709 ops in 1m 0.038s - 111.746 ops/sec`
 

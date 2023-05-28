@@ -22,8 +22,7 @@ fun runDemo() {
 
         val initialCount = 1_000_000
         val chunkSize = 1000
-        val categories = 4
-        val duration = 10.seconds
+        val duration = 60.seconds
         val concurrency = 10
 
         r.text("Running test scenario...")
@@ -35,7 +34,7 @@ fun runDemo() {
             .forEach { chunk: List<Int> ->
                 db.execute(
                     "INSERT INTO books (category_id, author, title) VALUES " + chunk.joinToString(", ") {
-                        "(${randomCategory(categories)}, '${randomName()}', '${randomName()}')"
+                        "(${randomCategory()}, '${randomName()}', '${randomName()}')"
                     },
                 )
             }
@@ -44,13 +43,13 @@ fun runDemo() {
 
         r.h3("Running inserts for $duration with concurrency $concurrency")
         val insertsResult = benchmark.benchmarkInserts(duration, concurrency) {
-            "INSERT INTO books (category_id, author, title) VALUES (${randomCategory(categories)}, '${randomName()}', '${randomName()}')"
+            "INSERT INTO books (category_id, author, title) VALUES (${randomCategory()}, '${randomName()}', '${randomName()}')"
         }
         r.code(insertsResult.toString())
 
         r.h3("Running selects for $duration with concurrency $concurrency")
         val selectsResult = benchmark.benchmarkSelects(duration, concurrency) {
-            "SELECT * FROM books WHERE author = '${randomName()}'"
+            "SELECT * FROM books WHERE category_id = ${randomCategory()} AND author = '${randomName()}'"
         }
         r.code(selectsResult.toString())
     }
@@ -147,4 +146,4 @@ fun runDemo() {
 
 fun randomName(): String = UUID.randomUUID().toString()
 
-fun randomCategory(categories: Int): Int = Random.nextInt(categories)
+fun randomCategory(): Int = Random.nextInt(4)
