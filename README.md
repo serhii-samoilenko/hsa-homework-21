@@ -1,6 +1,6 @@
-# Highload Software Architecture 8 Lesson 20 Homework
+# Highload Software Architecture 8 Lesson 21 Homework
 
-Database: Replication
+Database: Sharding
 ---
 
 ## Test project setup
