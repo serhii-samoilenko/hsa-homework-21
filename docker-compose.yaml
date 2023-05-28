@@ -2,11 +2,20 @@ version: "3"
 
 services:
 
-  standalone-postgres:
-    container_name: standalone-postgres
+  postgres:
+    container_name: postgres
     image: postgres:14
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  postgres-partitioned:
+    container_name: postgres-partitioned
+    image: postgres:14
+    ports:
+      - "5433:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -15,7 +24,7 @@ services:
     container_name: citus-master
     image: citusdata/citus:postgres_14
     ports:
-      - "5433:5432"
+      - "5434:5432"
     environment: &AUTH
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

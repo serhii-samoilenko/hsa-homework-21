@@ -7,6 +7,7 @@ class Database(private val pool: ConnectionPool) {
     fun execute(vararg sql: String, report: Report? = null) = execute(sql.toList(), report)
 
     fun execute(sql: List<String>, report: Report? = null) {
+        if (sql.isEmpty()) return
         report?.sql(sql.toList())
         pool.connection().use { connection ->
             sql.forEach {
